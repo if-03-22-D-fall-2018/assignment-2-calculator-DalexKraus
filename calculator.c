@@ -86,8 +86,11 @@ int main(int argc, const char *argv[])
     do
     {
         request_user_action(&user_input);
-        get_operands(&first_number, &second_number);
-        perform_operation(&user_input, &first_number, &second_number);
+        if (user_input != -1)
+        {
+            get_operands(&first_number, &second_number);
+            perform_operation(&user_input, &first_number, &second_number);
+        }
     }
     while(user_input != -1);
 
