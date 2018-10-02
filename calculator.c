@@ -2,9 +2,11 @@
 #include <float.h>
 #include <stdbool.h>
 
+#define SELECTION_MAX 5
+
 bool isInputValid(int* input)
 {
-    return ((*input) >= -1 && (*input) <= 4);
+    return ((*input) >= -1 && (*input) <= SELECTION_MAX);
 }
 
 void get_operands(double* firstOperand, double* secondOperand)
@@ -32,6 +34,15 @@ bool check_calculation(double operationResult, double* resultStorage)
     return true;
 }
 
+void perform_power_calculation(double *firstOperand, double* secondOperand, double* result)
+{
+    *result = 1;
+    for (int i = 0; i < *secondOperand; i++)
+    {
+        *result *= *firstOperand;
+    }
+}
+
 void perform_operation(int* operation, double* firstOperand, double* secondOperand)
 {
     double result;
@@ -41,18 +52,16 @@ void perform_operation(int* operation, double* firstOperand, double* secondOpera
             check_calculation(*firstOperand + *secondOperand, &result);
             break;
         case 2:
-            result = *firstOperand - *secondOperand;
+            check_calculation(*firstOperand - *secondOperand, &result);
             break;
         case 3:
             check_calculation(*firstOperand * *secondOperand, &result);
             break;
         case 4:
-            if (*secondOperand == 0)
-            {
-                printf("Division by zero\n\n");
-                return;
-            }
-            result = *firstOperand / *secondOperand;
+            check_calculation(*firstOperand / *secondOperand, &result);
+            break;
+        case 5:
+            perform_power_calculation(firstOperand, secondOperand, &result);
             break;
     }
     printf("\nResult: %lf\n\n", result);
@@ -65,6 +74,7 @@ void request_user_action(int* user_action)
     printf("\tSubtract (2)\n");
     printf("\tMultiply (3)\n");
     printf("\tDivide (4)\n");
+    printf("\tPower (5)\n");
     printf("\tStop program (-1)\n");
     do
     {
