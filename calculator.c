@@ -41,7 +41,7 @@ int perform_power_calculation(double *firstOperand, double* secondOperand, doubl
     for (int i = 0; i < *secondOperand; i++)
     {
         if (*result * *firstOperand > DBL_MAX) return OVERFLOW_ERROR;
-        if (*result * *firstOperand < DBL_MIN) return UNDERFLOW_ERROR;
+        if (*result * *firstOperand < -DBL_MAX) return UNDERFLOW_ERROR;
         *result *= *firstOperand;
     }
     return 0;
@@ -55,22 +55,22 @@ int perform_operation(int* operation, double* firstOperand, double* secondOperan
     {
         case 1:
             if (*firstOperand + *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
-            if (*firstOperand + *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            if (*firstOperand + *secondOperand < -DBL_MAX) { return UNDERFLOW_ERROR; }
             result = *firstOperand + *secondOperand;
             break;
         case 2:
             if (*firstOperand - *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
-            if (*firstOperand - *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            if (*firstOperand - *secondOperand < -DBL_MAX) { return UNDERFLOW_ERROR; }
             result = *firstOperand - *secondOperand;
             break;
         case 3:
             if (*firstOperand * *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
-            if (*firstOperand * *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            if (*firstOperand * *secondOperand < -DBL_MAX) { return UNDERFLOW_ERROR; }
             result = *firstOperand * *secondOperand;
             break;
         case 4:
             if (*firstOperand / *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
-            if (*firstOperand / *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            if (*firstOperand / *secondOperand < -DBL_MAX) { return UNDERFLOW_ERROR; }
             result = *firstOperand / *secondOperand;
             break;
         case 5:
