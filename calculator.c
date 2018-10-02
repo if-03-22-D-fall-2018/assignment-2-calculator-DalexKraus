@@ -1,8 +1,26 @@
+/*----------------------------------------------------------
+ *				HTBLA-Leonding / Class: 2DHIF
+ * ---------------------------------------------------------
+ * Exercise Number: 2
+ * Title:			Calculator
+ * Author:			David Kraus
+ * ----------------------------------------------------------
+ * Description:
+ * A basic calculator with basic functionalities,
+ * e.g. addition, subtraction, multiplication and division
+ * The calculator is also able to calculate the power of
+ * a number.
+ * ----------------------------------------------------------
+*/
+
 #include <stdio.h>
 #include <float.h>
 #include <stdbool.h>
 
-#define SELECTION_MAX 5
+#define SELECTION_MAX        5
+#define CALCULATION_SUCCEDED 0
+#define OVERFLOW_ERROR      -1
+#define UNDERFLOW_ERROR     -2
 
 bool isInputValid(int* input)
 {
@@ -17,54 +35,51 @@ void get_operands(double* firstOperand, double* secondOperand)
     scanf("%lf", secondOperand);
 }
 
-bool check_calculation(double operationResult, double* resultStorage)
-{
-    if (operationResult > DBL_MAX)
-    {
-        printf("Number overflow\n\n");
-        return false;
-    }
-    else if (operationResult < DBL_MIN)
-    {
-        printf("Number underflow\n\n");
-        return false;
-    }
-
-    *resultStorage = operationResult;
-    return true;
-}
-
-void perform_power_calculation(double *firstOperand, double* secondOperand, double* result)
+int perform_power_calculation(double *firstOperand, double* secondOperand, double* result)
 {
     *result = 1;
     for (int i = 0; i < *secondOperand; i++)
     {
+        if (*result * *firstOperand > DBL_MAX) return OVERFLOW_ERROR;
+        if (*result * *firstOperand < DBL_MIN) return UNDERFLOW_ERROR;
         *result *= *firstOperand;
     }
+    return 0;
 }
 
-void perform_operation(int* operation, double* firstOperand, double* secondOperand)
+int perform_operation(int* operation, double* firstOperand, double* secondOperand)
 {
-    double result;
+    double result = 0.0;
     switch (*operation)
     {
         case 1:
-            check_calculation(*firstOperand + *secondOperand, &result);
+            if (*firstOperand + *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
+            if (*firstOperand + *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            result = *firstOperand + *secondOperand;
             break;
         case 2:
-            check_calculation(*firstOperand - *secondOperand, &result);
+            if (*firstOperand - *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
+            if (*firstOperand - *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            result = *firstOperand - *secondOperand;
             break;
         case 3:
-            check_calculation(*firstOperand * *secondOperand, &result);
+            if (*firstOperand * *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
+            if (*firstOperand * *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            result = *firstOperand * *secondOperand;
             break;
         case 4:
-            check_calculation(*firstOperand / *secondOperand, &result);
+            if (*firstOperand / *secondOperand > DBL_MAX) { return OVERFLOW_ERROR;  }
+            if (*firstOperand / *secondOperand < DBL_MIN) { return UNDERFLOW_ERROR; }
+            result = *firstOperand / *secondOperand;
             break;
         case 5:
-            perform_power_calculation(firstOperand, secondOperand, &result);
+            int status = 0;
+            status = perform_power_calculation(firstOperand, secondOperand, &result);
+            if (status != 0) { return status; }
             break;
     }
-    printf("\nResult: %lf\n\n", result);
+    printf("\nResult: %4.3lf\n\n", result);
+    return CALCULATION_SUCCEDED;
 }
 
 void request_user_action(int* user_action)
@@ -99,7 +114,15 @@ int main(int argc, const char *argv[])
         if (user_input != -1)
         {
             get_operands(&first_number, &second_number);
-            perform_operation(&user_input, &first_number, &second_number);
+            int calculation_status = perform_operation(&user_input, &first_number, &second_number);
+            if (calculation_status == OVERFLOW_ERROR)
+            {
+                printf("Number overflow\n");
+            }
+            else if (calculation_status == UNDERFLOW_ERROR)
+            {
+                printf("Number underflow\n");
+            }
         }
     }
     while(user_input != -1);
