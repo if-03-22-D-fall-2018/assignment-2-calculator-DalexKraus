@@ -50,6 +50,7 @@ int perform_power_calculation(double *firstOperand, double* secondOperand, doubl
 int perform_operation(int* operation, double* firstOperand, double* secondOperand)
 {
     double result = 0.0;
+    int status = 0;
     switch (*operation)
     {
         case 1:
@@ -73,9 +74,8 @@ int perform_operation(int* operation, double* firstOperand, double* secondOperan
             result = *firstOperand / *secondOperand;
             break;
         case 5:
-            int status = 0;
             status = perform_power_calculation(firstOperand, secondOperand, &result);
-            if (status != 0) { return status; }
+            if (status != CALCULATION_SUCCEDED) { return status; }
             break;
     }
     printf("\nResult: %4.3lf\n\n", result);
@@ -93,11 +93,10 @@ void request_user_action(int* user_action)
     printf("\tStop program (-1)\n");
     do
     {
-        if (!isInputValid(user_action))
+        if (user_action != NULL && !isInputValid(user_action))
         {
             printf("Input not allowed, please try again\n\n");
         }
-
         printf("Enter your choice: ");
         scanf("%d", user_action);
     } while (!isInputValid(user_action));
